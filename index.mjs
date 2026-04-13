@@ -23,7 +23,7 @@ const port = process.env.PORT || 8080;
 const pool = new pg.Pool({
   host: "localhost",
   port: 5433,
-  user: "postgres",
+  user: "postgres", 
   password: "postgres",
   database: "sql_class_2_db",
   max: 20,
@@ -84,3 +84,5 @@ app.put("/:id/:name", async (req, res) => {
 });
 
 app.listen(port, () => console.log("Server starting on port: " + port));
+
+
