@@ -77,7 +77,7 @@ const login = async ({email, password}: {email: string; password: string}) => {
     .set({refreshToken: user.refreshToken})
     .where(eq(userTable.id, user.id));
 
-  return user;
+  return {user, accessToken, refreshToken};
 };
 
 const issueAccessToken = async (token: string) => {
@@ -101,7 +101,7 @@ const issueAccessToken = async (token: string) => {
 
   const accessToken = generateAccessToken({id: user.id, role: user.role});
 
-  return accessToken;
+  return accessToken ;
 };
 
 const logout = async (userId: string) => {
@@ -120,4 +120,4 @@ const logout = async (userId: string) => {
     .where(eq(userTable.id, userId));
 };
 
-export {register, login, issueAccessToken ,logout};
+export {register, login, issueAccessToken, logout};

@@ -30,14 +30,25 @@ const authenticate = async (
   if (!user) {
     throw ApiError.unauthorized("User not found");
   }
-
-//   req.user = {};
+  (req as any).user = {
+    id: user.id,
+    role: user.role,
+    email: user.email,
+  };
 
   next();
 };
 
 const authorized = async (...roles: string[]) => {
-  return (req: Request, res: Response, next: NextFunction) => {};
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!roles.includes((req as any).user.role)) {
+      throw ApiError.forbidden(
+        "You do not have permission to perform this action",
+      );
+    }
+
+    next();
+  };
 };
 
 export {authenticate, authorized};

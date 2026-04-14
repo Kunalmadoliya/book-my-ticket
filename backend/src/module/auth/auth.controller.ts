@@ -1,39 +1,44 @@
 import * as authService from "./auth.service";
 import type {Request, Response} from "express";
-import {RegisterDto} from "./dto/register.dto";
-import {ApiError} from "../../common/utils/api-error";
 import {ApiResponse} from "../../common/utils/api-response";
-import {LoginDto} from "./dto/login.dto";
+import {AuthRequest} from "../../types/express";
+import {ApiError} from "../../common/utils/api-error";
+("../../types/express");
 
 const register = async (req: Request, res: Response) => {
-  const {error, value} = RegisterDto.validate(req.body);
-
-  if (error) {
-    throw ApiError.unauthorized(error.join(", "));
-  }
-
-  if (!value) {
-    throw ApiError.unauthorized("Please Register Again");
-  }
-
-  const user = await authService.register(value);
+  const user = await authService.register(req.body);
 
   return ApiResponse.ok(res, "User Created", user);
 };
 
 const login = async (req: Request, res: Response) => {
-  const {error, value} = LoginDto.validate(req.body);
+  const {user, accessToken, refreshToken} = await authService.login(req.body);
 
-  if (!value) {
-    throw ApiError.unauthorized(error?.join(", "));
-  }
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  });
 
-  if (error) {
-    throw ApiError.unauthorized("Register Again");
-  }
-
-  const user = await authService.login(value);
-  return ApiResponse.ok(res, "Logged in successfully", user);
+  ApiResponse.ok(res, "Login Successfull", {user, accessToken});
 };
 
-export {register, login};
+const refreshToken = async (req: Request, res: Response) => {
+  const token = req.cookies?.refreshToken;
+  const accessToken = await authService.issueAccessToken(token);
+
+  ApiResponse.ok(res, "Token Refreshed", accessToken);
+};
+
+const logout = async (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    throw ApiError.badRequest("Not able to logout at this current moment");
+  }
+  await authService.logout(req.user.id);
+
+  res.clearCookie("refreshToken");
+  ApiResponse.ok(res, "Logged out successfully");
+};
+
+export {register, login, refreshToken, logout};
