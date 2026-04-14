@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -43,6 +43,11 @@
           class="border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
           Create account
         </button>
+
+        <button onclick="register()"
+          class="text-sm text-gray-500 underline">
+          Submit Register
+        </button>
       </div>
     </div>
   </div>
@@ -56,6 +61,7 @@
 </div>
 
 <script>
+const BASE_URL = "https://book-my-ticket-production.up.railway.app";
 let token = "";
 
 // show register inputs
@@ -66,7 +72,7 @@ function showRegister() {
 
 // LOGIN
 async function login() {
-  const res = await fetch("https://book-my-ticket-production.up.railway.app/auth/login", {
+  const res = await fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
@@ -86,7 +92,7 @@ async function login() {
 
 // REGISTER
 async function register() {
-  await fetch("https://book-my-ticket-production.up.railway.app/auth/register", {
+  await fetch(`${BASE_URL}/auth/register`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
@@ -105,7 +111,7 @@ async function run() {
   const tbl = document.getElementById("tbl");
   tbl.innerHTML = "";
 
-  const res = await fetch("http://localhost:8080/seats");
+  const res = await fetch(`${BASE_URL}/seats`);
   const seats = await res.json();
 
   let tr;
@@ -126,7 +132,7 @@ async function run() {
       const name = prompt("Enter your name");
       if (!name) return;
 
-      const res = await fetch(`http://localhost:8080/${seat.id}/${name}`, {
+      const res = await fetch(`${BASE_URL}/${seat.id}/${name}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`
