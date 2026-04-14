@@ -6,12 +6,12 @@ import {
   generateAccessToken,
   generateRefreshToken,
   gerateResetToken,
+  verifyRefreshToken,
 } from "../../common/utils/jwt.utils";
 import bcrypt from "bcryptjs";
-import crypto from "crypto"
+import crypto from "crypto";
 
-
-const hashToken = (token : string) =>
+const hashToken = (token: string) =>
   crypto.createHash("sha256").update(token).digest("hex");
 
 async function register({
@@ -66,15 +66,58 @@ const login = async ({email, password}: {email: string; password: string}) => {
   if (!isMatch) {
     throw ApiError.forbidden("Invalid email or password");
   }
- 
-  const accessToken = generateAccessToken({id : user.id , role : user.role })
-  const refreshToken = generateRefreshToken({id : user.id})
 
-  user.refreshToken = hashToken(refreshToken)
+  const accessToken = generateAccessToken({id: user.id, role: user.role});
+  const refreshToken = generateRefreshToken({id: user.id});
 
-  await db.update(userTable).set({refreshToken : user.refreshToken}).where(eq(userTable.id , user.id))
+  user.refreshToken = hashToken(refreshToken);
 
-  return user
+  await db
+    .update(userTable)
+    .set({refreshToken: user.refreshToken})
+    .where(eq(userTable.id, user.id));
+
+  return user;
 };
 
-export {register, login};
+const issueAccessToken = async (token: string) => {
+  if (!token) throw ApiError.forbidden("Token not found");
+
+  const decoded = verifyRefreshToken(token);
+  if (!decoded) {
+    throw ApiError.unauthorized("Please register again invalid token");
+  }
+
+  const hashedToken = hashToken(token);
+
+  const [user] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.refreshToken, hashedToken));
+
+  if (!user) {
+    throw ApiError.notFound("User not found");
+  }
+
+  const accessToken = generateAccessToken({id: user.id, role: user.role});
+
+  return accessToken;
+};
+
+const logout = async (userId: string) => {
+  const [user] = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.id, userId));
+
+  if (!user) {
+    throw ApiError.notFound("User not found login again");
+  }
+
+  await db
+    .update(userTable)
+    .set({refreshToken: null})
+    .where(eq(userTable.id, userId));
+};
+
+export {register, login, issueAccessToken ,logout};

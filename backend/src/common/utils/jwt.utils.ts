@@ -1,19 +1,17 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
-import type {Request, Response, NextFunction} from "express";
-import {ApiError} from "./api-error";
 
 type UserType = {
   id: string;
   role: string;
 };
+
 const accessSecret = process.env.JWT_ACCESS_SECRET as string;
 const refreshSecret = process.env.JWT_REFRESH_SECRET as string;
 
-export const generateAccessToken = (payload: UserType) => {
-  if (!accessSecret) {
-    throw new Error("JWT secret missing");
-  }
+// ACCESS TOKEN
+export const generateAccessToken = (payload: UserType): string => {
+  if (!accessSecret) throw new Error("JWT access secret missing");
 
   return jwt.sign(payload, accessSecret, {
     expiresIn:
@@ -22,24 +20,29 @@ export const generateAccessToken = (payload: UserType) => {
   });
 };
 
-export const verifyAccessToken = (token: string) => {
-  return jwt.verify(token, accessSecret);
+export const verifyAccessToken = (token: string): UserType => {
+  return jwt.verify(token, accessSecret) as UserType;
 };
 
-export const generateRefreshToken = (playload: {id: string}) => {
-  return jwt.sign(playload, refreshSecret, {
+// REFRESH TOKEN
+export const generateRefreshToken = (payload: { id: string }): string => {
+  if (!refreshSecret) throw new Error("JWT refresh secret missing");
+
+  return jwt.sign(payload, refreshSecret, {
     expiresIn:
       (process.env.JWT_REFRESH_EXPIRES_IN as jwt.SignOptions["expiresIn"]) ||
       "7d",
   });
 };
 
-export const verifyRefreshToken = (token: string) => {
-  return jwt.verify(token, refreshSecret);
+export const verifyRefreshToken = (token: string): { id: string } => {
+  return jwt.verify(token, refreshSecret) as { id: string };
 };
 
+// RESET TOKEN
 export const gerateResetToken = () => {
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hashToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-  return {rawToken, hashToken};
+
+  return { rawToken, hashToken };
 };
