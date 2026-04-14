@@ -1,20 +1,26 @@
-//  CREATE TABLE seats (
+//     CREATE TABLE seats (
 //      id SERIAL PRIMARY KEY,
 //      name VARCHAR(255),
 //      isbooked INT DEFAULT 0
 //  );
+
 // INSERT INTO seats (isbooked)
 // SELECT 0 FROM generate_series(1, 20);
 
+
 import express from "express";
 import pg from "pg";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import {dirname} from "path";
+import {fileURLToPath} from "url";
 import cors from "cors";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const port = process.env.PORT || 8080;
+
+
+
+
 
 // Equivalent to mongoose connection
 // Pool is nothing but group of connections
@@ -23,7 +29,7 @@ const port = process.env.PORT || 8080;
 const pool = new pg.Pool({
   host: "localhost",
   port: 5433,
-  user: "postgres", 
+  user: "postgres",
   password: "postgres",
   database: "sql_class_2_db",
   max: 20,
@@ -31,7 +37,7 @@ const pool = new pg.Pool({
   idleTimeoutMillis: 0,
 });
 
-const app = new express();
+const app = new express(); 
 app.use(cors());
 
 app.get("/", (req, res) => {
@@ -66,7 +72,7 @@ app.put("/:id/:name", async (req, res) => {
     //if no rows found then the operation should fail can't book
     // This shows we Do not have the current seat available for booking
     if (result.rowCount === 0) {
-      res.send({ error: "Seat already booked" });
+      res.send({error: "Seat already booked"});
       return;
     }
     //if we get the row, we are safe to update
@@ -84,5 +90,3 @@ app.put("/:id/:name", async (req, res) => {
 });
 
 app.listen(port, () => console.log("Server starting on port: " + port));
-
-

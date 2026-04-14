@@ -2,6 +2,7 @@ import {createServer} from "node:http";
 import "dotenv/config";
 import {createApplication} from "./app";
 
+
 async function main() {
   try {
     const server = createServer(createApplication());

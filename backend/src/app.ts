@@ -3,11 +3,14 @@ import type {Express} from "express";
 import router from "./module/auth/auth.route";
 import cookieParser from "cookie-parser";
 import {ApiError} from "./common/utils/api-error";
+import cors from "cors"
 
 export function createApplication(): Express {
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
+  app.use(cors())
+
 
   app.get("/", (req, res) => {
     console.log("Route Hit");

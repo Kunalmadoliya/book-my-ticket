@@ -1,141 +1,153 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Stellar Seat Booking</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
-      body {
-        font-family: "Outfit", sans-serif;
-        background-color: #0f172a;
-        color: #f8fafc;
-      }
-    </style>
-  </head>
-  <body
-    class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
-  >
-    <div
-      class="max-w-7xl w-full bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl p-10 border border-slate-700/50"
-    >
-      <div class="text-center mb-10">
-        <h1
-          class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 mb-4 tracking-tight"
-        >
-          ChaiCode Cinema - Now Showing<br />
-          <br />
-          <span class="text-red-400">
-            <span class="font-bold">Dhurandhar The Revenge</span>
-          </span>
-        </h1>
-        <p class="text-slate-400 text-lg">Jassi ko ghar ki yaad kyu nhi aai?</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book My Ticket</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center">
+
+<div class="w-full max-w-5xl">
+
+  <!-- AUTH SECTION -->
+  <div id="authSection" class="max-w-md mx-auto mb-8">
+    <div class="bg-white text-black rounded-2xl shadow-lg p-6 border border-gray-200">
+
+      <h2 class="text-2xl font-semibold text-center mb-6">
+        Welcome back
+      </h2>
+
+      <div class="flex flex-col gap-3">
+        <input id="email" placeholder="Email"
+          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"/>
+
+        <input id="password" type="password" placeholder="Password"
+          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"/>
+
+        <input id="firstName" placeholder="First Name"
+          class="px-3 py-2 border border-gray-300 rounded-lg hidden"/>
+
+        <input id="lastName" placeholder="Last Name"
+          class="px-3 py-2 border border-gray-300 rounded-lg hidden"/>
       </div>
 
-      <div class="flex justify-center mb-10">
-        <div
-          class="bg-slate-900/50 rounded-full px-6 py-3 border border-slate-700 flex gap-8 items-center"
-        >
-          <div class="flex items-center gap-3">
-            <div
-              class="w-4 h-4 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.6)]"
-            ></div>
-            <span class="text-slate-300 font-medium tracking-wide"
-              >Available</span
-            >
-          </div>
-          <div class="w-px h-6 bg-slate-700"></div>
-          <div class="flex items-center gap-3">
-            <div
-              class="w-4 h-4 rounded-full bg-rose-500/20 border border-rose-500/50"
-            ></div>
-            <span class="text-slate-400 font-medium tracking-wide">Booked</span>
-          </div>
-        </div>
-      </div>
+      <div class="flex flex-col gap-3 mt-5">
+        <button onclick="login()"
+          class="bg-black text-white py-2 rounded-lg hover:bg-gray-900">
+          Login
+        </button>
 
-      <div class="flex justify-center">
-        <div
-          class="bg-slate-900/40 p-8 rounded-2xl border border-slate-700/50 shadow-inner"
-        >
-          <table
-            id="tbl"
-            class="border-separate border-spacing-4 mx-auto"
-          ></table>
-        </div>
+        <button onclick="showRegister()"
+          class="border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
+          Create account
+        </button>
       </div>
     </div>
+  </div>
 
-    <script>
-      async function run() {
-        const tbl = document.getElementById("tbl");
-        const res = await fetch("/seats");
-        const resarray = await res.json();
-        const j = resarray.sort((a, b) => a.id - b.id);
-        let tr;
-        for (let i = 0; i < j.length; i++) {
-          if (i % 8 === 0) tr = document.createElement("tr");
+  <!-- BOOKING SECTION -->
+  <div id="bookingSection" class="hidden">
+    <h1 class="text-center text-2xl mb-4">Select Your Seat</h1>
+    <table id="tbl" class="mx-auto border-spacing-3"></table>
+  </div>
 
-          const td = document.createElement("td");
+</div>
 
-          // Base aesthetic classes - added 'relative group' for tooltip positioning
-          const baseClasses =
-            "w-32 h-32 rounded-2xl text-center align-middle text-2xl font-bold transition-all duration-300 select-none relative group";
+<script>
+let token = "";
 
-          if (j[i].isbooked) {
-            td.className = `${baseClasses} bg-rose-500/10 text-rose-500/60 border border-rose-500/20 cursor-not-allowed`;
-            td.innerHTML = `
-                    <span class="relative z-10">${j[i].id}</span>
-                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-slate-900 border border-slate-700 text-sm text-slate-300 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-2xl z-50 pointer-events-none font-normal shadow-[0_10px_25px_rgba(0,0,0,0.5)]">
-                        Booked by: <span class="font-bold text-white ml-1">${j[i].name}</span>
-                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-[6px] border-transparent border-t-slate-700"></div>
-                        <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-[5px] border-transparent border-t-slate-900"></div>
-                    </div>
-                `;
-          } else {
-            td.className = `${baseClasses} bg-emerald-500 text-white border-2 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.3)] cursor-pointer hover:bg-emerald-400 hover:-translate-y-1.5 hover:shadow-[0_10px_25px_rgba(16,185,129,0.5)] active:scale-95 active:shadow-[0_0_10px_rgba(16,185,129,0.3)]`;
-            td.innerHTML = `<span class="relative z-10">${j[i].id}</span>`;
-          }
+// show register inputs
+function showRegister() {
+  firstName.classList.remove("hidden");
+  lastName.classList.remove("hidden");
+}
 
-          td.addEventListener("click", async function (e) {
-            const currentTd = e.currentTarget;
-            if (currentTd.classList.contains("cursor-not-allowed")) {
-              return; // Seat is already taken
-            }
+// LOGIN
+async function login() {
+  const res = await fetch("https://book-my-ticket-production.up.railway.app/auth/login", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
 
-            try {
-              const id = j[i].id; // Safe from loop closure
-              const name = prompt("Enter your name");
-              if (!name) return;
+  const data = await res.json();
+  token = data.data.accessToken;
 
-              const res = await fetch(`/${id}/${name}`, { method: "PUT" });
-              const data = await res.json();
+  document.getElementById("authSection").style.display = "none";
+  document.getElementById("bookingSection").style.display = "block";
 
-              if (data.error) {
-                alert("FAILED! Couldn't book! already booked.");
-              } else {
-                alert("Booked successfully!");
-                // Visually transition to booked state upon success
-                currentTd.className = `${baseClasses} bg-rose-500/10 text-rose-500/60 border border-rose-500/20 cursor-not-allowed`;
-                currentTd.innerHTML = `
-                            <span class="relative z-10">${id}</span>
-                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 px-4 py-2 bg-slate-900 border border-slate-700 text-sm text-slate-300 rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap shadow-2xl z-50 pointer-events-none font-normal shadow-[0_10px_25px_rgba(0,0,0,0.5)]">
-                                Booked by: <span class="font-bold text-white ml-1">${name}</span>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-[6px] border-transparent border-t-slate-700"></div>
-                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[2px] border-[5px] border-transparent border-t-slate-900"></div>
-                            </div>
-                        `;
-              }
-            } catch (ex) {
-              alert("error booking " + ex);
-            }
-          });
-          tr.appendChild(td);
-          tbl.appendChild(tr);
+  run();
+}
+
+// REGISTER
+async function register() {
+  await fetch("https://book-my-ticket-production.up.railway.app/auth/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value
+    })
+  });
+
+  alert("Registered! Now login");
+}
+
+// SEATS
+async function run() {
+  const tbl = document.getElementById("tbl");
+  tbl.innerHTML = "";
+
+  const res = await fetch("http://localhost:8080/seats");
+  const seats = await res.json();
+
+  let tr;
+  seats.forEach((seat, i) => {
+    if (i % 8 === 0) tr = document.createElement("tr");
+
+    const td = document.createElement("td");
+
+    td.className = seat.isbooked
+      ? "bg-red-500 p-4 rounded cursor-not-allowed"
+      : "bg-green-500 p-4 rounded cursor-pointer hover:scale-105";
+
+    td.innerText = seat.id;
+
+    td.onclick = async () => {
+      if (seat.isbooked) return;
+
+      const name = prompt("Enter your name");
+      if (!name) return;
+
+      const res = await fetch(`http://localhost:8080/${seat.id}/${name}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`
         }
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        alert("Already booked");
+      } else {
+        alert("Booked!");
+        run();
       }
-      run();
-    </script>
-  </body>
+    };
+
+    tr.appendChild(td);
+    tbl.appendChild(tr);
+  });
+}
+</script>
+
+</body>
 </html>
