@@ -191,178 +191,141 @@
       </section>
     </div>
 
-    <script>
-      const BASE_URL = "https://book-my-ticket-production.up.railway.app";
+  <script>
+const AUTH_URL = "https://book-my-ticket-production.up.railway.app";
+const SEAT_URL = "http://localhost:8080"; 
 
-      const loginTab = document.getElementById("loginTab");
-      const registerTab = document.getElementById("registerTab");
-      const authContainer = document.getElementById("authContainer");
-      const loginForm = document.getElementById("loginForm");
-      const registerForm = document.getElementById("registerForm");
+const loginTab = document.getElementById("loginTab");
+const registerTab = document.getElementById("registerTab");
+const authContainer = document.getElementById("authContainer");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
 
-      const registerBtn = document.getElementById("registerBtn");
-      const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const loginBtn = document.getElementById("loginBtn");
 
-      const booking = document.getElementById("booking");
+const booking = document.getElementById("booking");
 
-      // 🔥 AUTO LOGIN ON REFRESH
-      window.addEventListener("load", async () => {
-        try {
-          const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
-            method: "POST",
-            credentials: "include",
-          });
 
-          const data = await res.json();
+// AUTO LOGIN
+window.addEventListener("load", async () => {
+  try {
+    const res = await fetch(`${AUTH_URL}/auth/refresh-token`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-          if (res.ok) {
-            booking.classList.remove("hidden");
-            authContainer.classList.add("hidden");
-            run();
-          }
-        } catch (err) {
-          console.log("User not logged in");
-        }
-      });
-
-      // TOGGLE
-      registerTab.addEventListener("click", () => {
-        registerTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
-        loginTab.setAttribute("class", "w-1/2 py-2");
-        loginForm.classList.add("hidden");
-        registerForm.classList.remove("hidden");
-      });
-
-      loginTab.addEventListener("click", () => {
-        registerTab.setAttribute("class", "w-1/2 py-2");
-        loginTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
-        registerForm.classList.add("hidden");
-        loginForm.classList.remove("hidden");
-      });
-
-      // LOGIN
-      loginBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`${BASE_URL}/auth/login`, {
-            method: "POST",
-            credentials: "include", // 🔥 IMPORTANT
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-              email: loginEmail.value,
-              password: loginPassword.value,
-            }),
-          });
-
-          const data = await res.json();
-
-          if (res.ok) {
-            alert("Login successful");
-            booking.classList.remove("hidden");
-            authContainer.classList.add("hidden");
-            run();
-          } else {
-            alert(data.message || "Invalid credentials");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("Something went wrong");
-        }
-      });
-
-      // REGISTER
-      registerBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`${BASE_URL}/auth/register`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-              firstName: firstName.value,
-              lastName: lastName.value,
-              email: registerEmail.value,
-              password: registerPassword.value,
-            }),
-          });
-
-          const data = await res.json();
-
-          if (res.ok) {
-            alert("Registered successfully");
-          } else {
-            alert(data.message || "Registration failed");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("Something went wrong");
-        }
-      });
-
-      // SEATS
-      async function run() {
-        const tbl = document.getElementById("tbl");
-        tbl.innerHTML = "";
-
-        const res = await fetch(`${BASE_URL}/seats`);
-        const resarray = await res.json();
-        const j = resarray.sort((a, b) => a.id - b.id);
-
-        let tr;
-
-        for (let i = 0; i < j.length; i++) {
-          if (i % 8 === 0) tr = document.createElement("tr");
-
-          const td = document.createElement("td");
-
-          const base =
-            "w-16 h-16 rounded-lg text-center text-sm font-medium transition-all duration-200 select-none relative group";
-
-          if (j[i].isbooked) {
-            td.className = `${base} bg-white/10 text-gray-500 border border-white/10 cursor-not-allowed`;
-            td.innerHTML = `
-        <span>${j[i].id}</span>
-        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-xs rounded opacity-0 group-hover:opacity-100">
-          ${j[i].name}
-        </div>
-      `;
-          } else {
-            td.className = `${base} bg-white text-black cursor-pointer hover:scale-105`;
-            td.innerHTML = `<span>${j[i].id}</span>`;
-          }
-
-          td.addEventListener("click", async function () {
-            if (td.classList.contains("cursor-not-allowed")) return;
-
-            const name = prompt("Enter your name");
-            if (!name) return;
-
-            const res = await fetch(`${BASE_URL}/${j[i].id}/${name}`, {
-              method: "PUT",
-            });
-
-            const text = await res.text();
-
-            let data;
-            try {
-              data = JSON.parse(text);
-            } catch {
-              console.error("Invalid JSON:", text);
-              alert("Server error");
-              return;
-            }
-
-            if (data.error) {
-              alert("Already booked");
-            } else {
-              alert("Booked!");
-              run();
-            }
-          });
-
-          tr.appendChild(td);
-          tbl.appendChild(tr);
-        }
-      }
-
+    if (res.ok) {
+      booking.classList.remove("hidden");
+      authContainer.classList.add("hidden");
       run();
-    </script>
+    }
+  } catch {}
+});
+
+
+// TOGGLE
+registerTab.onclick = () => {
+  registerTab.className = "w-1/2 py-2 bg-black text-white";
+  loginTab.className = "w-1/2 py-2";
+  loginForm.classList.add("hidden");
+  registerForm.classList.remove("hidden");
+};
+
+loginTab.onclick = () => {
+  loginTab.className = "w-1/2 py-2 bg-black text-white";
+  registerTab.className = "w-1/2 py-2";
+  registerForm.classList.add("hidden");
+  loginForm.classList.remove("hidden");
+};
+
+
+// LOGIN
+loginBtn.onclick = async () => {
+  const res = await fetch(`${AUTH_URL}/auth/login`, {
+    method: "POST",
+    credentials: "include",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: loginEmail.value,
+      password: loginPassword.value,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    booking.classList.remove("hidden");
+    authContainer.classList.add("hidden");
+    run();
+  } else {
+    alert(data.message);
+  }
+};
+
+
+// REGISTER
+registerBtn.onclick = async () => {
+  const res = await fetch(`${AUTH_URL}/auth/register`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: registerEmail.value,
+      password: registerPassword.value,
+    }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) alert(data.message);
+};
+
+
+// SEATS
+async function run() {
+  const tbl = document.getElementById("tbl");
+  tbl.innerHTML = "";
+
+  const res = await fetch(`${SEAT_URL}/seats`);
+  const seats = await res.json();
+
+  let tr;
+
+  seats.forEach((seat, i) => {
+    if (i % 8 === 0) tr = document.createElement("tr");
+
+    const td = document.createElement("td");
+
+    td.className = seat.isbooked
+      ? "bg-gray-400 p-4 cursor-not-allowed"
+      : "bg-white text-black p-4 cursor-pointer";
+
+    td.innerText = seat.id;
+
+    td.onclick = async () => {
+      if (seat.isbooked) return;
+
+      const name = prompt("Enter name");
+      if (!name) return;
+
+      const res = await fetch(`${SEAT_URL}/${seat.id}/${name}`, {
+        method: "PUT",
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        alert("Already booked");
+      } else {
+        run();
+      }
+    };
+
+    tr.appendChild(td);
+    tbl.appendChild(tr);
+  });
+}
+</script>
   </body>
 </html>
