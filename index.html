@@ -192,6 +192,8 @@
     </div>
 
     <script>
+      const BASE_URL = "https://book-my-ticket-production.up.railway.app";
+
       const loginTab = document.getElementById("loginTab");
       const registerTab = document.getElementById("registerTab");
       const authContainer = document.getElementById("authContainer");
@@ -203,6 +205,27 @@
 
       const booking = document.getElementById("booking");
 
+      // 🔥 AUTO LOGIN ON REFRESH
+      window.addEventListener("load", async () => {
+        try {
+          const res = await fetch(`${BASE_URL}/auth/refresh-token`, {
+            method: "POST",
+            credentials: "include",
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            booking.classList.remove("hidden");
+            authContainer.classList.add("hidden");
+            run();
+          }
+        } catch (err) {
+          console.log("User not logged in");
+        }
+      });
+
+      // TOGGLE
       registerTab.addEventListener("click", () => {
         registerTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
         loginTab.setAttribute("class", "w-1/2 py-2");
@@ -211,18 +234,18 @@
       });
 
       loginTab.addEventListener("click", () => {
-        registerTab.setAttribute("class", "w-1/2 py-2 ");
+        registerTab.setAttribute("class", "w-1/2 py-2");
         loginTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
         registerForm.classList.add("hidden");
         loginForm.classList.remove("hidden");
       });
 
-      const BASE_URL = "https://book-my-ticket-production.up.railway.app";
-
+      // LOGIN
       loginBtn.addEventListener("click", async () => {
         try {
           const res = await fetch(`${BASE_URL}/auth/login`, {
             method: "POST",
+            credentials: "include", // 🔥 IMPORTANT
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
               email: loginEmail.value,
@@ -246,6 +269,7 @@
         }
       });
 
+      // REGISTER
       registerBtn.addEventListener("click", async () => {
         try {
           const res = await fetch(`${BASE_URL}/auth/register`, {
@@ -272,13 +296,12 @@
         }
       });
 
+      // SEATS
       async function run() {
         const tbl = document.getElementById("tbl");
         tbl.innerHTML = "";
 
-        const res = await fetch(
-          "https://book-my-ticket-production.up.railway.app/seats",
-        );
+        const res = await fetch(`${BASE_URL}/seats`);
         const resarray = await res.json();
         const j = resarray.sort((a, b) => a.id - b.id);
 
@@ -311,10 +334,9 @@
             const name = prompt("Enter your name");
             if (!name) return;
 
-            const res = await fetch(
-              `https://book-my-ticket-production.up.railway.app/${j[i].id}/${name}`,
-              {method: "PUT"},
-            );
+            const res = await fetch(`${BASE_URL}/${j[i].id}/${name}`, {
+              method: "PUT",
+            });
 
             const text = await res.text();
 
