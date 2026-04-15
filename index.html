@@ -1,159 +1,271 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Book My Ticket</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book My Ticket</title>
 
-<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<div class="w-full max-w-5xl">
+    <!-- Premium font -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-  <!-- AUTH SECTION -->
-  <div id="authSection" class="max-w-md mx-auto mb-8">
-    <div class="bg-white text-black rounded-2xl shadow-lg p-6 border border-gray-200">
+      body {
+        font-family: "Inter", sans-serif;
+        background: #0a0a0a;
+      }
+    </style>
+  </head>
 
-      <h2 class="text-2xl font-semibold text-center mb-6">
-        Welcome back
-      </h2>
+  <body class="min-h-screen flex items-center justify-center text-white">
+    <div class="w-full max-w-6xl px-6">
+      <section class="hidden">
+        <!-- HEADER -->
+        <div class="text-center mb-12">
+          <h1 class="text-5xl font-semibold tracking-tight mb-3">
+            Book My Ticket
+          </h1>
+          <p class="text-gray-400 text-sm">Minimal seat booking experience</p>
+        </div>
 
-      <div class="flex flex-col gap-3">
-        <input id="email" placeholder="Email"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"/>
+        <!-- LEGEND -->
+        <div class="flex justify-center mb-10">
+          <div
+            class="flex gap-8 px-6 py-3 rounded-full border border-white/10 bg-white/5"
+          >
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 bg-white rounded-full"></div>
+              <span class="text-xs text-gray-300">Available</span>
+            </div>
 
-        <input id="password" type="password" placeholder="Password"
-          class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black"/>
+            <div class="flex items-center gap-2">
+              <div class="w-3 h-3 bg-gray-700 rounded-full"></div>
+              <span class="text-xs text-gray-500">Booked</span>
+            </div>
+          </div>
+        </div>
 
-        <input id="firstName" placeholder="First Name"
-          class="px-3 py-2 border border-gray-300 rounded-lg hidden"/>
+        <!-- SCREEN -->
+        <div class="text-center mb-10">
+          <div class="mx-auto w-1/2 h-[2px] bg-white/20"></div>
+          <p class="text-xs text-gray-500 mt-2 tracking-widest">SCREEN</p>
+        </div>
 
-        <input id="lastName" placeholder="Last Name"
-          class="px-3 py-2 border border-gray-300 rounded-lg hidden"/>
-      </div>
+        <!-- SEATS -->
+        <div class="flex justify-center">
+          <div
+            class="p-10 border border-white/10 rounded-3xl bg-white/[0.03] backdrop-blur"
+          >
+            <table
+              id="tbl"
+              class="border-separate border-spacing-5 mx-auto"
+            ></table>
+          </div>
+        </div>
+      </section>
 
-      <div class="flex flex-col gap-3 mt-5">
-        <button onclick="login()"
-          class="bg-black text-white py-2 rounded-lg hover:bg-gray-900">
-          Login
-        </button>
+      <section class="block">
+        <div
+          id="authContainer"
+          class="min-h-screen flex items-center justify-center bg-black text-white"
+        >
+          <div
+            class="w-full max-w-md bg-white text-black rounded-2xl p-8 shadow-xl"
+          >
+            <!-- TOGGLE -->
+            <div class="flex mb-6 border rounded-lg overflow-hidden">
+              <button id="loginTab" class="w-1/2 py-2 bg-black text-white">
+                Login
+              </button>
+              <button id="registerTab" class="w-1/2 py-2 bg-white">
+                Register
+              </button>
+            </div>
 
-        <button onclick="showRegister()"
-          class="border border-gray-300 py-2 rounded-lg hover:bg-gray-100">
-          Create account
-        </button>
+            <!-- LOGIN FORM -->
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="form-section">
+              <h2 class="text-xl font-semibold mb-4 text-center">Login</h2>
 
-        <button onclick="register()"
-          class="text-sm text-gray-500 underline">
-          Submit Register
-        </button>
-      </div>
+              <div class="space-y-4">
+                <input
+                  id="loginEmail"
+                  type="email"
+                  placeholder="john.doe@gmail.com"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+
+                <input
+                  id="loginPassword"
+                  type="password"
+                  placeholder="John@1234"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+              </div>
+
+              <button
+                id="loginBtn"
+                class="w-full mt-5 bg-black text-white py-2 rounded-lg"
+              >
+                Login
+              </button>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="form-section hidden mt-2">
+              <h2 class="text-xl font-semibold mb-4 text-center">Register</h2>
+
+              <div class="space-y-4">
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+
+                <input
+                  id="registerEmail"
+                  type="email"
+                  placeholder="john.doe@gmail.com"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+
+                <input
+                  id="registerPassword"
+                  type="password"
+                  placeholder="John@1234"
+                  class="w-full px-4 py-2 border rounded-lg"
+                />
+              </div>
+
+              <button
+                id="registerBtn"
+                class="w-full mt-5 bg-black text-white py-2 rounded-lg"
+              >
+                Create Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
 
-  <!-- BOOKING SECTION -->
-  <div id="bookingSection" class="hidden">
-    <h1 class="text-center text-2xl mb-4">Select Your Seat</h1>
-    <table id="tbl" class="mx-auto border-spacing-3"></table>
-  </div>
+    <script>
+      //login-register
 
-</div>
+      const loginTab = document.getElementById("loginTab");
+      const registerTab = document.getElementById("registerTab");
+      const authContainer = document.getElementById("authContainer");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
 
-<script>
-const BASE_URL = "https://book-my-ticket-production.up.railway.app";
-let token = "";
+      const registerBtn = document.getElementById("registerBtn");
 
-// show register inputs
-function showRegister() {
-  firstName.classList.remove("hidden");
-  lastName.classList.remove("hidden");
-}
+      registerTab.addEventListener("click", () => {
+        registerTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
+        loginTab.setAttribute("class", "w-1/2 py-2");
+        loginForm.classList.add("hidden");
+        registerForm.classList.remove("hidden");
+      });
 
-// LOGIN
-async function login() {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      email: email.value,
-      password: password.value
-    })
-  });
+      loginTab.addEventListener("click", () => {
+        registerTab.setAttribute("class", "w-1/2 py-2 ");
+        loginTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
+        registerForm.classList.add("hidden");
+        loginForm.classList.remove("hidden");
+      });
 
-  const data = await res.json();
-  token = data.data.accessToken;
+      registerBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(
+            "https://book-my-ticket-production.up.railway.app/auth/register",
+            {
+              method: "POST",
+              headers: {"Content-Type": "application/json"},
+              body: JSON.stringify({
+                firstName: firstName.value,
+                lastName: lastName.value,
+                email: registerEmail.value,
+                password: registerPassword.value,
+              }),
+            },
+          );
 
-  document.getElementById("authSection").style.display = "none";
-  document.getElementById("bookingSection").style.display = "block";
+          const data = await res.json();
 
-  run();
-}
-
-// REGISTER
-async function register() {
-  await fetch(`${BASE_URL}/auth/register`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({
-      firstName: firstName.value,
-      lastName: lastName.value,
-      email: email.value,
-      password: password.value
-    })
-  });
-
-  alert("Registered! Now login");
-}
-
-// SEATS
-async function run() {
-  const tbl = document.getElementById("tbl");
-  tbl.innerHTML = "";
-
-  const res = await fetch(`${BASE_URL}/seats`);
-  const seats = await res.json();
-
-  let tr;
-  seats.forEach((seat, i) => {
-    if (i % 8 === 0) tr = document.createElement("tr");
-
-    const td = document.createElement("td");
-
-    td.className = seat.isbooked
-      ? "bg-red-500 p-4 rounded cursor-not-allowed"
-      : "bg-green-500 p-4 rounded cursor-pointer hover:scale-105";
-
-    td.innerText = seat.id;
-
-    td.onclick = async () => {
-      if (seat.isbooked) return;
-
-      const name = prompt("Enter your name");
-      if (!name) return;
-
-      const res = await fetch(`${BASE_URL}/${seat.id}/${name}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`
+          if (res.ok) {
+            alert("Successfully Registered");
+          } else {
+            alert(data.message || "Email already exists");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Something went wrong");
         }
       });
 
-      const data = await res.json();
+      async function run() {
+        const tbl = document.getElementById("tbl");
+        tbl.innerHTML = "";
 
-      if (data.error) {
-        alert("Already booked");
-      } else {
-        alert("Booked!");
-        run();
+        const res = await fetch("/seats");
+        const resarray = await res.json();
+        const j = resarray.sort((a, b) => a.id - b.id);
+
+        let tr;
+
+        for (let i = 0; i < j.length; i++) {
+          if (i % 8 === 0) tr = document.createElement("tr");
+
+          const td = document.createElement("td");
+
+          const base =
+            "w-16 h-16 rounded-lg text-center text-sm font-medium transition-all duration-200 select-none relative group";
+
+          if (j[i].isbooked) {
+            td.className = `${base} bg-white/10 text-gray-500 border border-white/10 cursor-not-allowed`;
+            td.innerHTML = `
+              <span>${j[i].id}</span>
+              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-xs rounded opacity-0 group-hover:opacity-100">
+                ${j[i].name}
+              </div>
+            `;
+          } else {
+            td.className = `${base} bg-white text-black cursor-pointer hover:scale-105`;
+            td.innerHTML = `<span>${j[i].id}</span>`;
+          }
+
+          td.addEventListener("click", async function () {
+            if (td.classList.contains("cursor-not-allowed")) return;
+
+            const name = prompt("Enter your name");
+            if (!name) return;
+
+            const res = await fetch(`/${j[i].id}/${name}`, {method: "PUT"});
+            const data = await res.json();
+
+            if (data.error) {
+              alert("Already booked");
+            } else {
+              alert("Booked!");
+              run();
+            }
+          });
+
+          tr.appendChild(td);
+          tbl.appendChild(tr);
+        }
       }
-    };
 
-    tr.appendChild(td);
-    tbl.appendChild(tr);
-  });
-}
-</script>
-
-</body>
+      run();
+    </script>
+  </body>
 </html>
