@@ -1,7 +1,6 @@
 import type { Response } from "express";
 
 export class ApiResponse {
-
   static send<T>(
     res: Response,
     statusCode: number,
@@ -11,25 +10,27 @@ export class ApiResponse {
     return res.status(statusCode).json({
       success: true,
       message,
-      data,
+      data: data ?? null,
     });
   }
 
-
-  static ok<T>(res: Response, message = "Success", data?: T) {
+  static ok<T>(res: Response, message = "Request successful", data?: T) {
     return this.send(res, 200, message, data);
   }
 
-  static created<T>(res: Response, message = "Created", data?: T) {
+  static created<T>(res: Response, message = "Resource created successfully", data?: T) {
     return this.send(res, 201, message, data);
   }
 
-  static accepted<T>(res: Response, message = "Accepted", data?: T) {
+  static accepted<T>(res: Response, message = "Request accepted", data?: T) {
     return this.send(res, 202, message, data);
   }
 
-
   static noContent(res: Response) {
-    return res.status(204).send();
+    return res.status(204).json({
+      success: true,
+      message: "No content",
+      data: null,
+    });
   }
 }
