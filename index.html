@@ -168,6 +168,7 @@
       const registerForm = document.getElementById("registerForm");
 
       const registerBtn = document.getElementById("registerBtn");
+      const loginBtn = document.getElementById("loginBtn");
 
       registerTab.addEventListener("click", () => {
         registerTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
@@ -212,6 +213,32 @@
         }
       });
 
+      loginBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(
+            "https://book-my-ticket-production.up.railway.app/auth/login",
+            {
+              method: "POST",
+              headers: {"Content-Type": "application/json"},
+              body: JSON.stringify({
+                email: loginEmail.value,
+                password: loginPassword.value,
+              }),
+            },
+          );
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert("Login successful");
+          } else {
+            alert(data.message || "Invalid credentials");
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Something went wrong");
+        }
+      });
       async function run() {
         const tbl = document.getElementById("tbl");
         tbl.innerHTML = "";
