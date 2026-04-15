@@ -1,7 +1,5 @@
 {
-  "experimentalServices": {
-    "frontend": {
-      "routePrefix": "/"
-    }
-  }
+  "routes": [
+    { "src": "/", "dest": "/index.html" }
+  ]
 }
