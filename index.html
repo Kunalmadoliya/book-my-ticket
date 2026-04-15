@@ -126,7 +126,6 @@
               </button>
             </div>
 
-            <!-- REGISTER -->
             <div id="registerForm" class="hidden">
               <h2 class="text-2xl font-semibold text-center mb-2">
                 Create account
@@ -193,8 +192,6 @@
     </div>
 
     <script>
-      //login-register
-
       const loginTab = document.getElementById("loginTab");
       const registerTab = document.getElementById("registerTab");
       const authContainer = document.getElementById("authContainer");
@@ -222,7 +219,6 @@
 
       const BASE_URL = "https://book-my-ticket-production.up.railway.app";
 
-
       loginBtn.addEventListener("click", async () => {
         try {
           const res = await fetch(`${BASE_URL}/auth/login`, {
@@ -249,7 +245,6 @@
           alert("Something went wrong");
         }
       });
-
 
       registerBtn.addEventListener("click", async () => {
         try {
@@ -281,7 +276,9 @@
         const tbl = document.getElementById("tbl");
         tbl.innerHTML = "";
 
-        const res = await fetch("/seats");
+        const res = await fetch(
+          "https://book-my-ticket-production.up.railway.app/seats",
+        );
         const resarray = await res.json();
         const j = resarray.sort((a, b) => a.id - b.id);
 
@@ -298,11 +295,11 @@
           if (j[i].isbooked) {
             td.className = `${base} bg-white/10 text-gray-500 border border-white/10 cursor-not-allowed`;
             td.innerHTML = `
-              <span>${j[i].id}</span>
-              <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-xs rounded opacity-0 group-hover:opacity-100">
-                ${j[i].name}
-              </div>
-            `;
+        <span>${j[i].id}</span>
+        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-black text-xs rounded opacity-0 group-hover:opacity-100">
+          ${j[i].name}
+        </div>
+      `;
           } else {
             td.className = `${base} bg-white text-black cursor-pointer hover:scale-105`;
             td.innerHTML = `<span>${j[i].id}</span>`;
@@ -314,8 +311,21 @@
             const name = prompt("Enter your name");
             if (!name) return;
 
-            const res = await fetch(`/${j[i].id}/${name}`, {method: "PUT"});
-            const data = await res.json();
+            const res = await fetch(
+              `https://book-my-ticket-production.up.railway.app/${j[i].id}/${name}`,
+              {method: "PUT"},
+            );
+
+            const text = await res.text();
+
+            let data;
+            try {
+              data = JSON.parse(text);
+            } catch {
+              console.error("Invalid JSON:", text);
+              alert("Server error");
+              return;
+            }
 
             if (data.error) {
               alert("Already booked");
