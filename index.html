@@ -225,8 +225,8 @@
             "https://book-my-ticket-production.up.railway.app/auth/register",
             {
               method: "POST",
+              credentials: "include",
               headers: {"Content-Type": "application/json"},
-                credentials: "include", 
               body: JSON.stringify({
                 firstName: firstName.value,
                 lastName: lastName.value,
@@ -255,8 +255,8 @@
             "https://book-my-ticket-production.up.railway.app/auth/login",
             {
               method: "POST",
+              credentials: "include",
               headers: {"Content-Type": "application/json"},
-                credentials: "include", 
               body: JSON.stringify({
                 email: loginEmail.value,
                 password: loginPassword.value,
