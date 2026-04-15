@@ -30,12 +30,13 @@ Implements authentication, protected routes, and safe seat booking logic.
 ## ⚙️ Setup Instructions
 
 ### 1. Clone repo
-```bash
-git clone <your-repo-url>
-cd book-my-ticket
-2. Run PostgreSQL (Docker)
-docker-compose up -d
-3. Create DB tables
+git clone <your-repo-url>  
+cd book-my-ticket  
+
+### 2. Run PostgreSQL (Docker)
+docker-compose up -d  
+
+### 3. Create DB tables
 CREATE TABLE seats (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255),
@@ -44,57 +45,93 @@ CREATE TABLE seats (
 
 INSERT INTO seats (isbooked)
 SELECT 0 FROM generate_series(1, 20);
-4. Install dependencies
-npm install
-5. Run server
-npm run dev
-🔐 Authentication Flow
-User registers
-Logs in → gets:
-Access Token (response)
-Refresh Token (httpOnly cookie)
-Access protected routes using:
-Authorization: Bearer <accessToken>
-🎟️ Booking Flow
-Login required
-Select seat
-Booking API called
-Seat gets locked
-Duplicate booking prevented
-📡 API Base URL
+
+### 4. Install dependencies
+npm install  
+
+### 5. Run server
+npm run dev  
+
+---
+
+## 🔐 Authentication Flow
+
+1. User registers  
+2. Logs in → gets:
+   - Access Token (response)
+   - Refresh Token (httpOnly cookie)  
+3. Access protected routes using:
+Authorization: Bearer <accessToken>  
+
+---
+
+## 🎟️ Booking Flow
+
+- Login required  
+- Select seat  
+- Booking API called  
+- Seat gets locked  
+- Duplicate booking prevented  
+
+---
+
+## 📡 API Base URL
+
 https://book-my-ticket-production.up.railway.app
-🔐 Auth Routes
-POST https://book-my-ticket-production.up.railway.app/auth/register
-POST https://book-my-ticket-production.up.railway.app/auth/login
-POST https://book-my-ticket-production.up.railway.app/auth/refresh-token
-POST https://book-my-ticket-production.up.railway.app/auth/logout
+
+---
+
+## 🔐 Auth Routes
+
+POST https://book-my-ticket-production.up.railway.app/auth/register  
+POST https://book-my-ticket-production.up.railway.app/auth/login  
+POST https://book-my-ticket-production.up.railway.app/auth/refresh-token  
+POST https://book-my-ticket-production.up.railway.app/auth/logout  
 
 
 
-🧪 Example Request
+---
+
+## 🧪 Example Request
+
 {
   "firstName": "Kunal",
   "lastName": "Madoliya",
   "email": "kunal@example.com",
   "password": "Kunal@1234"
 }
-🌐 Deployment
-Backend → Railway
-Database → PostgreSQL (Docker / Railway)
-Frontend → Vercel (optional)
-🧠 Learnings
-Real-world backend extension
-JWT auth + refresh strategy
-DB consistency (no double booking)
-Production-style API design
-📌 Note
+
+---
+
+## 🌐 Deployment
+
+- Backend → Railway  
+- Database → PostgreSQL (Docker / Railway)  
+- Frontend → Vercel (optional)
+
+---
+
+## 🧠 Learnings
+
+- Real-world backend extension  
+- JWT auth + refresh strategy  
+- DB consistency (no double booking)  
+- Production-style API design  
+
+---
+
+## 📌 Note
 
 Frontend is minimal. Focus is on backend logic and API design as per hackathon requirements.
 
-👨‍💻 Author
+---
+
+## 👨‍💻 Author
 
 Kunal Madoliya
 
-🔥 Summary
+---
+
+## 🔥 Summary
 
 Production-style backend with authentication and secure booking built on an existing system.
