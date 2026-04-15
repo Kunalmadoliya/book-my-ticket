@@ -14,7 +14,6 @@ import crypto from "crypto";
 const hashToken = (token: string) =>
   crypto.createHash("sha256").update(token).digest("hex");
 
-
 async function register({
   firstName,
   lastName,
@@ -52,8 +51,6 @@ async function register({
 
   return user;
 }
-
-
 const login = async ({ email, password }: { email: string; password: string }) => {
   const [user] = await db
     .select()
