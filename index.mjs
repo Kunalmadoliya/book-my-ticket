@@ -8,9 +8,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080;
 
 const pool = new pg.Pool({
-  connectionString:
-    process.env.DATABASE_URL ||
-    "postgresql://postgres:postgres@localhost:5433/sql_class_2_db",
+  url:
+    process.env.DATABASE_URL
+,
   ssl: process.env.DATABASE_URL ? {rejectUnauthorized: false} : false,
   max: 20,
   connectionTimeoutMillis: 0,
