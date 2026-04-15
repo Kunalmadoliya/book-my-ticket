@@ -3,21 +3,19 @@ import type {Express} from "express";
 import router from "./module/auth/auth.route";
 import cookieParser from "cookie-parser";
 import {ApiError} from "./common/utils/api-error";
-import cors from "cors"
+import cors from 'cors'
 
 export function createApplication(): Express {
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
-app.use(cors({
-  origin: "https://www.skyzzcloset.shop",
+  app.use(cors({
+  origin: "http://127.0.0.1:5500",
   credentials: true
 }));
 
-
   app.get("/", (req, res) => {
-    console.log("Route Hit");
-    return res.json({message: "Hello how are you"});
+    return res.json({message: "Server running"});
   });
 
   app.use("/auth", router);

@@ -131,7 +131,6 @@
               <h2 class="text-2xl font-semibold text-center mb-2">
                 Create account
               </h2>
-             
 
               <div class="space-y-4">
                 <div>
@@ -205,7 +204,7 @@
       const registerBtn = document.getElementById("registerBtn");
       const loginBtn = document.getElementById("loginBtn");
 
-      const booking = document.getElementById("booking")
+      const booking = document.getElementById("booking");
 
       registerTab.addEventListener("click", () => {
         registerTab.setAttribute("class", "w-1/2 py-2 bg-black text-white");
@@ -221,29 +220,29 @@
         loginForm.classList.remove("hidden");
       });
 
-      registerBtn.addEventListener("click", async () => {
+      const BASE_URL = "https://book-my-ticket-production.up.railway.app";
+
+
+      loginBtn.addEventListener("click", async () => {
         try {
-          const res = await fetch(
-            "https://book-my-ticket-production.up.railway.app/auth/register",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {"Content-Type": "application/json"},
-              body: JSON.stringify({
-                firstName: firstName.value,
-                lastName: lastName.value,
-                email: registerEmail.value,
-                password: registerPassword.value,
-              }),
-            },
-          );
+          const res = await fetch(`${BASE_URL}/auth/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              email: loginEmail.value,
+              password: loginPassword.value,
+            }),
+          });
 
           const data = await res.json();
 
           if (res.ok) {
-            alert("Successfully Registered");
+            alert("Login successful");
+            booking.classList.remove("hidden");
+            authContainer.classList.add("hidden");
+            run();
           } else {
-            alert(data.message || "Email already exists");
+            alert(data.message || "Invalid credentials");
           }
         } catch (err) {
           console.error(err);
@@ -251,39 +250,33 @@
         }
       });
 
-      loginBtn.addEventListener("click", async () => {
+
+      registerBtn.addEventListener("click", async () => {
         try {
-          const res = await fetch(
-            "https://book-my-ticket-production.up.railway.app/auth/login",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {"Content-Type": "application/json"},
-              body: JSON.stringify({
-                email: loginEmail.value,
-                password: loginPassword.value,
-              }),
-            },
-          );
+          const res = await fetch(`${BASE_URL}/auth/register`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+              firstName: firstName.value,
+              lastName: lastName.value,
+              email: registerEmail.value,
+              password: registerPassword.value,
+            }),
+          });
 
           const data = await res.json();
 
           if (res.ok) {
-            alert("Login successful");
-            booking.classList.remove("hidden")
-            authContainer.classList.add("hidden")
-
+            alert("Registered successfully");
           } else {
-            alert(data.message || "Invalid credentials");
+            alert(data.message || "Registration failed");
           }
-        } catch (error) {
-          console.error(error);
+        } catch (err) {
+          console.error(err);
           alert("Something went wrong");
         }
       });
 
-
-    
       async function run() {
         const tbl = document.getElementById("tbl");
         tbl.innerHTML = "";
