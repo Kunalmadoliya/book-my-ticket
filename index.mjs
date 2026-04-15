@@ -8,9 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const port = process.env.PORT || 8080;
 
 const pool = new pg.Pool({
-  url:
-    process.env.DATABASE_URL
-,
+  url: process.env.DATABASE_URL,
   ssl: process.env.DATABASE_URL ? {rejectUnauthorized: false} : false,
   max: 20,
   connectionTimeoutMillis: 0,
@@ -31,13 +29,8 @@ app.get("/", (req, res) => {
 
 // GET ALL SEATS
 app.get("/seats", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM seats ORDER BY id ASC");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({error: "Failed to fetch seats"});
-  }
+  const result = await pool.query("SELECT * FROM seats ORDER BY id ASC");
+  res.json(result.rows);
 });
 
 // BOOK SEAT
